@@ -17,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -34,7 +34,9 @@ jobs:
         run: npm run ci
 
       - name: Slack Notification
-        if: always()
+        if: always() && env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           if [ "${{ job.status }}" == "success" ]; then
             STATUS="PASSED ✅"
@@ -52,4 +54,4 @@ jobs:
               \"text\": \"Status: $STATUS\nRepo: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
             }]
           }" \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+          "$SLACK_WEBHOOK_URL"
