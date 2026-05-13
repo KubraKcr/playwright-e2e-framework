@@ -1,0 +1,26 @@
+{
+  "name": "insider-ai-qa-framework",
+  "version": "1.0.0",
+  "description": "End-to-end Playwright automation for Insider careers flow",
+  "author": "Kubra Kocur",    
+
+  "scripts": {
+    "explore": "tsx explorer/exploreCareers.ts",
+    "test": "playwright test --project=chromium",
+    "test:headed": "playwright test --project=chromium --headed",
+    "quality:gate": "tsx utils/qualityGate.ts",
+    "summary": "tsx utils/executionSummary.ts",
+    "ci": "npm run test && npm run summary && npm run quality:gate"
+  },
+  "keywords": [],
+  
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
+    "dotenv": "^17.4.2",
+    "tsx": "^4.21.0"
+  }
+}
+
+

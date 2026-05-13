@@ -1,0 +1,23 @@
+# Node
+node_modules/
+
+# Playwright outputs
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+
+# Evidence (generated)
+evidence/screenshots/*
+evidence/dom-snapshots/*
+evidence/dom/*
+evidence/traces/*
+
+# Explore outputs (AI data)
+explore-output/*.json
+
+# OS / misc
+.DS_Store
+
+reports/*.json

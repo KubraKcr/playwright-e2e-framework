@@ -1,0 +1,55 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * *' # every day at 09:00 Turkey time
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      BASE_URL: https://insiderone.com
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run tests + summary + quality gate
+        run: npm run ci
+
+      - name: Slack Notification
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            STATUS="PASSED ✅"
+            COLOR="#36a64f"
+          else
+            STATUS="FAILED ❌"
+            COLOR="#ff0000"
+          fi
+
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{
+            \"attachments\": [{
+              \"color\": \"$COLOR\",
+              \"title\": \"QA Automation Pipeline\",
+              \"text\": \"Status: $STATUS\nRepo: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+            }]
+          }" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
